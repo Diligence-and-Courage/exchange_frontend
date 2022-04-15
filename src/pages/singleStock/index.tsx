@@ -21,7 +21,7 @@ export const SingleStock: FC = () => {
                 representation: 'date',
             }),
         },
-        { pollingInterval: 1000 },
+        { pollingInterval: 1000 * 60 * 3 },
     );
 
     const [type, setType] = useState<ChartType>('area');
