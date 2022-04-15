@@ -13,13 +13,16 @@ export const SingleStock: FC = () => {
 
     const [range, setRange] = useState<RangeType>('5d');
 
-    const { data: candlesData, isLoading } = useStockCandlesQuery({
-        symbols: symbol,
-        resolution: rangeConfig[range].resolution,
-        timeFrom: formatISO(sub(Date.now(), rangeConfig[range].duration), {
-            representation: 'date',
-        }),
-    });
+    const { data: candlesData, isLoading } = useStockCandlesQuery(
+        {
+            symbols: symbol,
+            resolution: rangeConfig[range].resolution,
+            timeFrom: formatISO(sub(Date.now(), rangeConfig[range].duration), {
+                representation: 'date',
+            }),
+        },
+        { pollingInterval: 1000 },
+    );
 
     const [type, setType] = useState<ChartType>('area');
     const [withVolume, setWithVolume] = useState<boolean>(false);

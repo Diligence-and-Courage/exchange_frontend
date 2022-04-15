@@ -36,25 +36,6 @@ export const Confirm = ({
     const [seil, seilResult] = useDeleteStockMutation();
     const [updateBalance, updateBalanceResult] = useUpdateBalanceMutation();
 
-    const navigate = useNavigate();
-    // const [seil, seilResult] = useDeleteStockMutation();
-
-    useEffect(() => {
-        if (buyResult.isSuccess || seilResult.isSuccess) {
-            if (symbol !== 'no') {
-                navigate(`${ROUTES.stock}/${symbol}`);
-            } else {
-                navigate(ROUTES.profile);
-            }
-        }
-    }, [buyResult, seilResult]);
-
-    // callback === 'buy';
-    //
-    // switch (callback)
-    //
-    // const action =
-
     const action = callback === 'buy' ? buy : seil;
     const userId = useSelector(getUserId);
 
@@ -80,6 +61,8 @@ export const Confirm = ({
         updateBalance(count);
     };
 
+    const isError = buyResult.isError || seilResult.isError || updateBalanceResult.isError;
+
     return (
         <Callout
             gapSpace={0}
@@ -98,6 +81,9 @@ export const Confirm = ({
                     style={{ padding: '4px' }}
                     onChange={onChangeTextFieldValue}
                     value={String(count)}
+                    errorMessage={
+                        isError ? 'Something went wrong. Check if you have enough money' : null
+                    }
                 />
                 <DefaultButton onClick={callback === 'getMoney' ? balanceCallback : stockCallback}>
                     Confirm

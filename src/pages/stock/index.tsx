@@ -50,7 +50,7 @@ export const StockPage = () => {
 
     return (
         <Layout
-            header={<Header pageName={HEADERS.main} buttons={buttons} />}
+            header={<Header pageName={HEADERS.stock(symbol)} buttons={buttons} />}
             left={isSuccess ? <Content stock={stock} /> : null}
             right={
                 <RightPanel
