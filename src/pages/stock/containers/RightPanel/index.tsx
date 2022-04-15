@@ -82,7 +82,7 @@ export const RightPanel = ({
                             symbol={symbol}
                             question={`Buy ${symbol}`}
                             buttonId={buttonBuyId}
-                            toggleIsCalloutVisible={toggleIsBuyCalloutVisible}
+                            toggleIsCalloutVisible={toggleIsBuyCalloutVisible as never}
                             callback="buy"
                         />
                     )}
@@ -97,7 +97,7 @@ export const RightPanel = ({
                             symbol={symbol}
                             question={`Seil ${symbol}`}
                             buttonId={buttonSeilId}
-                            toggleIsCalloutVisible={toggleIsSeilCalloutVisible}
+                            toggleIsCalloutVisible={toggleIsSeilCalloutVisible as never}
                             callback="ceil"
                         />
                     )}

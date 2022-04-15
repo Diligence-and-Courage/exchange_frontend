@@ -25,7 +25,7 @@ export const UserInfo = ({ firstName, lastName, email, balance }: UserInfoProps)
                 />
                 <StyledAlignBottomRow gap={GAP.xl}>
                     <Label>Balance</Label>
-                    <Balance>{balance} $</Balance>
+                    <Balance>{balance.toFixed(2)} $</Balance>
                 </StyledAlignBottomRow>
                 <StyledElemRight>
                     <DefaultButton id={buttonId} onClick={toggleIsCalloutVisible}>
@@ -36,7 +36,7 @@ export const UserInfo = ({ firstName, lastName, email, balance }: UserInfoProps)
                             symbol="no"
                             question="Get some money"
                             buttonId={buttonId}
-                            toggleIsCalloutVisible={toggleIsCalloutVisible}
+                            toggleIsCalloutVisible={toggleIsCalloutVisible as never}
                             callback="getMoney"
                         />
                     )}

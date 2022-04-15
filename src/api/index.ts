@@ -19,6 +19,7 @@ export const api = createApi({
         // user
         getUserInfo: builder.query<{ data: UserInfo }, void>({
             query: () => '/user',
+            providesTags: ['User'],
         }),
         register: builder.mutation<UserInfo, CreateUserInfo>({
             query: (args) => ({
@@ -37,6 +38,7 @@ export const api = createApi({
         // user stocks
         getUserStocks: builder.query<AppResponse<[Stock & Quote & { count: number }]>, void>({
             query: () => '/user/stocks',
+            providesTags: ['UserStocks'],
         }),
         addStock: builder.mutation<unknown, UserStock>({
             query: (symbol) => ({
@@ -44,6 +46,7 @@ export const api = createApi({
                 method: 'POST',
                 body: symbol,
             }),
+            invalidatesTags: ['UserStocks', 'User'],
         }),
         deleteStock: builder.mutation<unknown, UserStock>({
             query: (symbol) => ({
@@ -51,6 +54,7 @@ export const api = createApi({
                 method: 'DELETE',
                 body: symbol,
             }),
+            invalidatesTags: ['UserStocks', 'User'],
         }),
         // all stocks
         getAllStocks: builder.query<AppResponse<[Stock & Quote]>, void>({
@@ -61,6 +65,17 @@ export const api = createApi({
             { symbol: string }
         >({
             query: ({ symbol }) => `/stock/${symbol}`,
+            providesTags: ['UserStocks'],
+        }),
+        updateBalance: builder.mutation<AppResponse<UserInfo>, number>({
+            query: (newBalance) => ({
+                url: '/user/balance',
+                method: 'POST',
+                body: {
+                    count: newBalance,
+                },
+            }),
+            invalidatesTags: ['UserStocks', 'User'],
         }),
         stockCandles: builder.query<AppResponse<StockCandleResponse>, StockCandleQuery>({
             query: ({ symbols, resolution, timeFrom, timeTo }) => {
@@ -94,4 +109,5 @@ export const {
     useGetUserStocksQuery,
     useAddStockMutation,
     useDeleteStockMutation,
+    useUpdateBalanceMutation,
 } = api;

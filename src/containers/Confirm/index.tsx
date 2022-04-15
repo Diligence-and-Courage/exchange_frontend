@@ -1,9 +1,9 @@
-import { Callout, DefaultButton, Text } from '@fluentui/react';
-import React, { useEffect } from 'react';
+import { Callout, DefaultButton, Text, TextField } from '@fluentui/react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-import { useAddStockMutation, useDeleteStockMutation } from '../../api';
+import { useAddStockMutation, useDeleteStockMutation, useUpdateBalanceMutation } from '../../api';
 import { ROUTES } from '../../App/routes';
 import { getUserId } from '../../store/user/selectors';
 import { Padding } from './styled';
@@ -17,6 +17,14 @@ interface ConfirmProps {
     callback: 'buy' | 'ceil' | 'getMoney';
 }
 
+function isNumeric(str) {
+    if (typeof str !== 'string') return false; // we only process strings!
+    return (
+        !Number.isNaN(str) && // use type coercion to parse the _entirety_ of the string (`parseFloat` alone does not do this)...
+        !Number.isNaN(parseFloat(str))
+    ); // ...and ensure strings of whitespace fail
+}
+
 export const Confirm = ({
     symbol,
     question,
@@ -26,6 +34,7 @@ export const Confirm = ({
 }: ConfirmProps) => {
     const [buy, buyResult] = useAddStockMutation();
     const [seil, seilResult] = useDeleteStockMutation();
+    const [updateBalance, updateBalanceResult] = useUpdateBalanceMutation();
 
     const navigate = useNavigate();
     // const [seil, seilResult] = useDeleteStockMutation();
@@ -49,6 +58,28 @@ export const Confirm = ({
     const action = callback === 'buy' ? buy : seil;
     const userId = useSelector(getUserId);
 
+    const [count, setCount] = useState<number>(1);
+
+    const onChangeTextFieldValue = React.useCallback(
+        (event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => {
+            if (!newValue || isNumeric(newValue)) {
+                setCount(Number(newValue) || 0);
+            }
+        },
+        [],
+    );
+
+    const stockCallback = () =>
+        action({
+            userId,
+            stockSymbol: symbol,
+            count,
+        });
+
+    const balanceCallback = () => {
+        updateBalance(count);
+    };
+
     return (
         <Callout
             gapSpace={0}
@@ -63,15 +94,12 @@ export const Confirm = ({
                 <Text block variant="small">
                     Are you shure?
                 </Text>
-                <DefaultButton
-                    onClick={() =>
-                        action({
-                            userId,
-                            stockSymbol: symbol,
-                            count: 1,
-                        })
-                    }
-                >
+                <TextField
+                    style={{ padding: '4px' }}
+                    onChange={onChangeTextFieldValue}
+                    value={String(count)}
+                />
+                <DefaultButton onClick={callback === 'getMoney' ? balanceCallback : stockCallback}>
                     Confirm
                 </DefaultButton>
             </Padding>
